@@ -1,0 +1,29 @@
+@font-face {
+    font-family: "BP";
+	font-weight: 200;
+    src: url("../../src/assets/fonts/BP-T.woff2");
+}
+
+@font-face {
+    font-family: "BP";
+	font-weight: 400;
+    src: url("../../src/assets/fonts/BP-R.woff2");
+}
+
+@font-face {
+    font-family: "BP";
+	font-weight: 600;
+    src: url("../../src/assets/fonts/BP-M.woff2");
+}
+
+@font-face {
+    font-family: "BP";
+	font-weight: 800;
+    src: url("../../src/assets/fonts/BP-B.woff2");
+}
+
+@font-face {
+    font-family: "BP";
+	font-weight: 1000;
+    src: url("../../src/assets/fonts/BP-H.woff2");
+}

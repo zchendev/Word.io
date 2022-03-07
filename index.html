@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title> Wordle+ </title>
+	<link href="src/stylesheets/fonts.css" rel="stylesheet" type="text/css" />
+	<link href="src/stylesheets/styles.css" rel="stylesheet" type="text/css" />
+    <link href="src/stylesheets/animations.css" rel="stylesheet" type="text/css" />
+</head>
+	<body>
+		<!-- Fixed Position Elements -->
+		<div id="div-popup-container"></div>
+		<div id="div-menu">
+			<ul id="ul-menu-list">
+				<!-- <li class="li-menu-heading"> Configurations </li>
+				<li class="li-menu-item"> <span class="span-menu-item"> Use Animations </span> </li>
+				<li class="li-menu-item"> <span class="span-menu-item"> Use Classic Keyboard </span> </li> -->
+				<li class="li-menu-heading"> Follow this project </li>
+				<li class="li-menu-item"> <a class="a-menu-item-link" target="_blank" href="https://github.com/DarkSide0918/Word.io"> <img class="img-menu-item-icon" src="./src/assets/icons/github.png"/> <span class="span-menu-item"> Follow on GitHub </span> </a> </li>
+			</ul>
+		</div>
+		<div id="div-shader"></div>
+
+		<!-- Page -->
+		<div id="div-header">
+			<div class="div-icons-container">
+				<div class="div-icon" id="div-icon-menu"> ☰ </div>
+			</div>
+			<p id="p-header"> <span class="span-title">WORD</span> <span class="span-title-sub">.io</span> </p>
+			<div class="div-icons-container"> 
+				<div class="div-icon" id="div-icon-settings"> </div>
+			</div>
+		</div>
+
+		<div id="div-wordle-container">
+			<div id="div-wordle-board-container"> 
+				<div id="div-wordle-board"> </div>
+			</div>
+
+			<div id="div-keyboard"> 
+			</div>
+		</div>
+
+		<!-- Data -->
+		<script src="./src/data/answers.js"></script>
+		<script src="./src/data/words.js"></script>
+			
+		<!-- Scripts -->
+		<script src="./src/scripts/toolkit.js"></script>
+		<script src="./src/scripts/main.js"></script>
+	</body>
+</html>
