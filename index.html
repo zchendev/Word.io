@@ -21,7 +21,14 @@
 				<li class="li-menu-item"> <a class="a-menu-item-link" target="_blank" href="https://github.com/DarkSide0918/Word.io"> <img class="img-menu-item-icon" src="./src/assets/icons/github.png"/> <span class="span-menu-item"> Follow on GitHub </span> </a> </li>
 			</ul>
 		</div>
-		<div id="div-shader"></div>
+		<div id="div-menu-shader" class="div-shader"></div>
+		<div id="div-mode-menu"> 
+			<div class="div-mode-select" id="div-mode-classic"> Classic </div>
+			<div class="div-mode-select" id="div-mode-sprint"> Sprint </div>
+			<div class="div-mode-select" id="div-mode-blitz"> Blitz </div>
+			<div class="div-mode-select" id="div-mode-blast"> Blast </div>
+		</div>
+		<div id="div-mode-menu-shader" class="div-shader"></div>
 
 		<!-- Page -->
 		<div id="div-header">
@@ -36,7 +43,21 @@
 
 		<div id="div-wordle-container">
 			<div id="div-wordle-board-container"> 
+				<div id="div-multiplier-container">
+					<div class="div-multiplier"> <p class="p-multiplier"> 6x </p> </div>
+					<div class="div-multiplier"> <p class="p-multiplier"> 5x </p> </div>
+					<div class="div-multiplier"> <p class="p-multiplier"> 4x </p> </div>
+					<div class="div-multiplier"> <p class="p-multiplier"> 3x </p> </div>
+					<div class="div-multiplier"> <p class="p-multiplier"> 2x </p> </div>
+					<div class="div-multiplier"> <p class="p-multiplier"> 1x </p> </div>
+				</div>
 				<div id="div-wordle-board"> </div>
+				<div id="div-stats-container"> 
+					<p class="p-stats-title"> Time </p>
+					<p class="p-stats-display" id="p-stats-time"> 00:00 </p>
+					<p class="p-stats-title"> Score </p>
+					<p class="p-stats-display" id="p-stats-score"> 0 </p>
+				</div>
 			</div>
 
 			<div id="div-keyboard"> 
