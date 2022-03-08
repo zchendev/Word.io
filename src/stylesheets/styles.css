@@ -159,13 +159,22 @@ div#div-mode-menu.div-mode-menu-active {
 }
 
 div.div-mode-select {
+	height: 1.5rem;
+	
     color: #ffffff;
 	font-family: "BP", sans-serif;
 	font-size: 1.25rem;
+	line-height: 1.25rem;
 	font-weight: 400;
     text-align: center;
 
     cursor: pointer;
+}
+
+div.div-mode-select:hover {
+	height: 2rem;
+	
+	font-size: 1.5rem;
 }
 
 div#div-popup-container {
