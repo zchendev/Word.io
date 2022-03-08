@@ -169,12 +169,14 @@ div.div-mode-select {
     text-align: center;
 
     cursor: pointer;
+
+	transition: 125ms;
 }
 
 div.div-mode-select:hover {
-	height: 2rem;
+	height: 2.5rem;
 	
-	font-size: 1.5rem;
+	font-size: 1.75rem;
 }
 
 div#div-popup-container {
