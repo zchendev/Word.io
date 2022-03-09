@@ -22,6 +22,8 @@ const intWordleLength = 5;
 const strKeyboardConfig = "QWERTYUIOPASDFGHJKL↩ZXCVBNM⟵";
 const intKeyboardSize = [10, 9, 9];
 const intKeySize = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1];
+const intBlastTime = 2; // in minutes, must be integer
+const intBlitzTime = 4; // in minutes, must be integer
 
 // Settings
 var intKeyboardStyle = 0; // 0 - Wordle Style, 1 - Stephen Style

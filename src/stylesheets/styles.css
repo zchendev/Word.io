@@ -125,7 +125,145 @@ div#div-shader.div-shader-active {
     z-index: 1;
 }
 
+div#div-mode-menu {
+    position: fixed;
+    left: 40vw;
+    right: 40vw;
+    top: 25vh;
+    bottom: 25vh;
 
+    padding: 2.5rem;
+
+    background-color: rgb(15, 15, 15);
+
+    opacity: 0;
+
+    transition: 125ms;
+
+    z-index: -1;
+}
+
+div#div-mode-menu.div-mode-menu-active {
+    left: 42.5vw;
+    right: 42.5vw;
+    top: 25vh;
+    bottom: 25vh;
+
+    opacity: 1;
+
+    z-index: 2;
+}
+
+div.div-mode-select {
+	height: 2.5rem;
+	
+    color: #ffffff;
+	font-family: "BP", sans-serif;
+	font-size: 1.25rem;
+	line-height: 1.75rem;
+	font-weight: 400;
+    text-align: center;
+
+    cursor: pointer;
+
+	transition: 125ms;
+}
+
+div.div-mode-select:hover {
+	height: 2.5rem;
+	
+	font-size: 1.75rem;
+    line-height: 2.5rem;
+}
+
+p.p-stats {
+    color: #ffffff;
+	font-family: "BP", sans-serif;
+	font-size: 1.25rem;
+	line-height: 1.25rem;
+	font-weight: 400;
+    text-align: center;
+
+	transition: 125ms;
+}
+
+p.p-menu-heading {
+    color: #ffffff;
+	font-family: "BP", sans-serif;
+	font-size: 1.5rem;
+	line-height: 1.25rem;
+	font-weight: 800;
+    text-align: center;
+
+	transition: 125ms;
+}
+
+/* ======== Popups ======== */
+
+div#div-popup-container {
+    position: fixed;
+
+    top: 10vh;
+
+    width: 100vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    transform: translateX(0%);
+    z-index: 1;
+}
+
+div.div-popup {
+    margin: 0;
+    padding: 0;
+
+    height: 0;
+
+    position: relative;
+
+    background-color: rgba(255, 255, 255, 0.75);
+
+    color: var(--text-color-dark);
+    font-family: "BP", sans-serif;
+	font-size: 0;
+	font-weight: 600;
+
+    transition: 250ms ease-in-out;
+}
+
+div.div-popup.div-popup-score-accepted {
+    color: var(--text-color-light);
+
+    background-color: var(--letter-color-accepted);
+}
+
+div.div-popup.div-popup-score-included {
+    color: var(--text-color-light);
+
+    background-color: var(--letter-color-included);
+}
+
+div.div-popup.div-popup-score-excluded {
+    color: var(--text-color-light);
+
+    background-color: var(--letter-color-excluded);
+}
+
+div.div-popup-fade {
+    opacity: 0;
+}
+
+div.div-popup-expand {
+    margin: 0.75rem;
+    padding: 0.75rem;
+
+    height: 1.25rem;
+
+    font-size: 1.25rem;
+}
 
 /* Wordle */
 
@@ -401,52 +539,6 @@ div.div-keyboard-key[data-state="excluded"][data-style="0"]:hover {
 
 div.div-keyboard-key[data-style="0"]:active {
 	transform: scale(0.9);
-}
-
-div#div-popup-container {
-    position: fixed;
-
-    top: 10vh;
-
-    width: 100vw;
-
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    transform: translateX(0%);
-    z-index: 1;
-}
-
-div.div-popup {
-    margin: 0;
-    padding: 0;
-
-    height: 0;
-
-    position: relative;
-
-    background-color: rgba(255, 255, 255, 0.75);
-
-    font-family: "BP", sans-serif;
-	font-size: 0;
-	font-weight: 600;
-
-    transition: 250ms ease-in-out;
-}
-
-div.div-popup-fade {
-    opacity: 0;
-}
-
-div.div-popup-expand {
-    margin: 0.75rem;
-    padding: 0.75rem;
-
-    height: 1.25rem;
-
-    font-size: 1.25rem;
 }
 
 span.span-title {
