@@ -1,4 +1,6 @@
 function funcInitKeyboard() {
+    htmlDivKeyboardContainer.innerHTML = null;
+
     var intKeyIndex = 0;
 
     for (var i = 0; i < intKeyboardSize.length; i++) {
@@ -39,6 +41,8 @@ function funcInitKeyboard() {
 
 function funcInitBoard() {
 
+    htmlDivWordleBoard.innerHTML = null;
+
     var html = "";
 	
 	for (var i = 0; i < 6; i++) {
@@ -50,6 +54,28 @@ function funcInitBoard() {
 	}
 
     htmlDivWordleBoard.innerHTML = html;
+
+    const htmlMultiplier = document.getElementById("div-multiplier-container");
+    const htmlStats = document.getElementById("div-stats-container");
+
+    switch (intGameMode) {
+        case 0: 
+            htmlMultiplier.classList.add("div-multiplier-container-hide");
+            htmlStats.classList.add("div-stats-container-hide");
+            break;
+        case 1: 
+            htmlMultiplier.classList.remove("div-multiplier-container-hide");
+            htmlStats.classList.remove("div-stats-container-hide");
+            break;
+        case 2: 
+            htmlMultiplier.classList.remove("div-multiplier-container-hide");
+            htmlStats.classList.remove("div-stats-container-hide");
+            break;
+        case 3: 
+            htmlMultiplier.classList.remove("div-multiplier-container-hide");
+            htmlStats.classList.remove("div-stats-container-hide");
+            break;
+    }
 }
 
 function funcRandomValueFromRange(lower, upper) {
@@ -107,11 +133,24 @@ function funcIncludesWord(strTargetWord) {
 	return (strAllowedGuesses[intMidIndex] == strTargetWord);
 }
 
-function funcPopup(strContent, intDuration = 1000, intMiscAnimationsDuration = 250) {
+function funcPopup(strContent, intDuration = 1000, intType = -1) {
     const htmlPopup = document.createElement("div");
 
     htmlPopup.innerHTML = strContent;
     htmlPopup.classList.add("div-popup");
+
+    switch (intType) {
+        case 0: 
+            htmlPopup.classList.add("div-popup-score-excluded");
+            break;
+        case 1: 
+            htmlPopup.classList.add("div-popup-score-included");
+            break;
+        case 2: 
+            htmlPopup.classList.add("div-popup-score-accepted");
+            break;
+    }
+
     htmlDivPopupContainer.prepend(htmlPopup);
 
     setTimeout(() => {
@@ -188,6 +227,13 @@ function funcRevealTiles(intResponse, strGuess, _intRow, strFormattedGuess) {
                         htmlTile.dataset.state = strKeyStates[intResponse[k]];
                         htmlTile.classList.remove("div-wordle-tile-flip");
                     });
+
+                    if (intGameMode == 3) {
+                        var intScoreIncrement = intBlastPoints[intResponse[k]] * intBlastMultiplier[_intRow];
+                        intScore += intScoreIncrement;
+                        funcPopup("+" + intScoreIncrement, intScoreDuration, intResponse[k]);
+                        funcUpdateStats();
+                    }
                 }
             }, (intAnimationDuration * i), i)
         }
@@ -211,6 +257,9 @@ function funcDetectWin(intResponse) {
 		}
 	}
 
+    const htmlModeMenu = document.getElementById("div-mode-menu");
+    const htmlShader = document.getElementById("div-mode-menu-shader");
+
 	if (boolWinState) {
         if (intAnimations) {
             if (intGameMode == 3) {
@@ -231,13 +280,19 @@ function funcDetectWin(intResponse) {
             }
             funcAnimateTiles(1);
             funcPopup(strWinComments[intRow - 1], intPopupDuration);
-            funcTerminateInteraction();
+            if (intGameMode == 0) funcTerminateInteraction();
+            else setTimeout(() => {
+                funcNewWord();
+            }, intAnimationDuration * 5);
+            if (intGameMode == 0) setTimeout(() => funcToggleModeMenu(htmlModeMenu, htmlShader), intAnimationDuration * 2);
         } else {
             funcPopup(strWinComments[intRow], intPopupDuration);
-            funcTerminateInteraction();
+            if (intGameMode == 0) funcTerminateInteraction();
+            else funcNewWord();
+            if (intGameMode == 0) funcToggleModeMenu(htmlModeMenu, htmlShader);
         }
         return;
-	} else if (intRow == 6) {
+	} else if ((intRow == 6 && intAnimations) || (intRow == 5 && !intAnimations)) {
         funcPopup(strAnswer.toUpperCase(), intPopupDuration);
         funcTerminateInteraction();
         funcEndGame();
@@ -360,16 +415,51 @@ function funcCheckAnswer() {
 }
 
 function funcInitIcons() {
+    // Main Menu
     const htmlMenuIcon = document.getElementById("div-icon-menu");
     const htmlMenu = document.getElementById("div-menu");
-    const htmlShader = document.getElementById("div-shader");
+    const htmlMenuShader = document.getElementById("div-menu-shader");
 
     htmlMenuIcon.addEventListener("click", () => {
-        funcToggleMenu(htmlMenuIcon, htmlMenu, htmlShader);
+        funcToggleMenu(htmlMenu, htmlMenuShader, htmlMenuIcon);
     });
 
-    htmlShader.addEventListener("click", () => {
-        funcToggleMenu(htmlMenuIcon, htmlMenu, htmlShader);
+    htmlMenuShader.addEventListener("click", () => {
+        funcToggleMenu(htmlMenu, htmlMenuShader, htmlMenuIcon);
+    });
+
+    // Mode Menu
+
+    const htmlModeMenu = document.getElementById("div-mode-menu");
+    const htmlShader = document.getElementById("div-mode-menu-shader");
+
+    const htmlModeClassic = document.getElementById("div-mode-classic");
+    const htmlModeSprint = document.getElementById("div-mode-sprint");
+    const htmlModeBlitz = document.getElementById("div-mode-blitz");
+    const htmlModeBlast = document.getElementById("div-mode-blast");
+
+    htmlModeClassic.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 0;
+        funcResetGame();
+    });
+
+    htmlModeSprint.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 1;
+        funcResetGame();
+    });
+
+    htmlModeBlitz.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 2;
+        funcResetGame();
+    });
+
+    htmlModeBlast.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 3;
+        funcResetGame();
     });
 }
 
@@ -463,7 +553,7 @@ function funcToggleMenu(htmlMenu, htmlShader, htmlMenuIcon) {
         htmlMenu.classList.remove("div-menu-active");
         htmlShader.classList.remove("div-shader-active");
     } else {
-        htmlMenuIcon.classList.add("div-icon-active");
+        if (htmlMenuIcon != null) htmlMenuIcon.classList.add("div-icon-active");
         htmlMenu.classList.add("div-menu-active");
         htmlShader.classList.add("div-shader-active");
     }
