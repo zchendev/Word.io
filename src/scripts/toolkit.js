@@ -1,4 +1,6 @@
 function funcInitKeyboard() {
+    htmlDivKeyboardContainer.innerHTML = null;
+
     var intKeyIndex = 0;
 
     for (var i = 0; i < intKeyboardSize.length; i++) {
@@ -39,6 +41,8 @@ function funcInitKeyboard() {
 
 function funcInitBoard() {
 
+    htmlDivWordleBoard.innerHTML = null;
+
     var html = "";
 	
 	for (var i = 0; i < 6; i++) {
@@ -50,6 +54,28 @@ function funcInitBoard() {
 	}
 
     htmlDivWordleBoard.innerHTML = html;
+
+    const htmlMultiplier = document.getElementById("div-multiplier-container");
+    const htmlStats = document.getElementById("div-stats-container");
+
+    switch (intGameMode) {
+        case 0: 
+            htmlMultiplier.classList.add("div-multiplier-container-hide");
+            htmlStats.classList.add("div-stats-container-hide");
+            break;
+        case 1: 
+            htmlMultiplier.classList.remove("div-multiplier-container-hide");
+            htmlStats.classList.remove("div-stats-container-hide");
+            break;
+        case 2: 
+            htmlMultiplier.classList.remove("div-multiplier-container-hide");
+            htmlStats.classList.remove("div-stats-container-hide");
+            break;
+        case 3: 
+            htmlMultiplier.classList.remove("div-multiplier-container-hide");
+            htmlStats.classList.remove("div-stats-container-hide");
+            break;
+    }
 }
 
 function funcRandomValueFromRange(lower, upper) {
@@ -107,11 +133,24 @@ function funcIncludesWord(strTargetWord) {
 	return (strAllowedGuesses[intMidIndex] == strTargetWord);
 }
 
-function funcPopup(strContent, intDuration = 1000, intMiscAnimationsDuration = 250) {
+function funcPopup(strContent, intDuration = 1000, intType = -1) {
     const htmlPopup = document.createElement("div");
 
     htmlPopup.innerHTML = strContent;
     htmlPopup.classList.add("div-popup");
+
+    switch (intType) {
+        case 0: 
+            htmlPopup.classList.add("div-popup-score-excluded");
+            break;
+        case 1: 
+            htmlPopup.classList.add("div-popup-score-included");
+            break;
+        case 2: 
+            htmlPopup.classList.add("div-popup-score-accepted");
+            break;
+    }
+
     htmlDivPopupContainer.prepend(htmlPopup);
 
     setTimeout(() => {
@@ -188,6 +227,13 @@ function funcRevealTiles(intResponse, strGuess, _intRow, strFormattedGuess) {
                         htmlTile.dataset.state = strKeyStates[intResponse[k]];
                         htmlTile.classList.remove("div-wordle-tile-flip");
                     });
+
+                    if (intGameMode == 3) {
+                        var intScoreIncrement = intBlastPoints[intResponse[k]] * intBlastMultiplier[_intRow];
+                        intScore += intScoreIncrement;
+                        funcPopup("+" + intScoreIncrement, intScoreDuration, intResponse[k]);
+                        funcUpdateStats();
+                    }
                 }
             }, (intAnimationDuration * i), i)
         }
@@ -211,19 +257,45 @@ function funcDetectWin(intResponse) {
 		}
 	}
 
+    const htmlModeMenu = document.getElementById("div-mode-menu");
+    const htmlShader = document.getElementById("div-mode-menu-shader");
+
 	if (boolWinState) {
         if (intAnimations) {
+            if (intGameMode == 3) {
+                console.log(intRow)
+                var intScoreIncrement = intBlastPoints[3] * intBlastMultiplier[intRow - 1];
+                intScore += intScoreIncrement;
+                funcUpdateStats();
+                funcPopup("+" + intScoreIncrement, intScoreDuration);
+            } else if (intGameMode == 2) {
+                intScore++;
+                funcUpdateStats();
+            } else if (intGameMode == 1) {
+                intScore++;
+                funcUpdateStats();
+                if (intScore >= 3) {
+                    funcEndGame();
+                }
+            }
             funcAnimateTiles(1);
             funcPopup(strWinComments[intRow - 1], intPopupDuration);
-            funcTerminateInteraction();
+            if (intGameMode == 0) funcTerminateInteraction();
+            else setTimeout(() => {
+                funcNewWord();
+            }, intAnimationDuration * 5);
+            if (intGameMode == 0) setTimeout(() => funcToggleModeMenu(htmlModeMenu, htmlShader), intAnimationDuration * 2);
         } else {
             funcPopup(strWinComments[intRow], intPopupDuration);
-            funcTerminateInteraction();
+            if (intGameMode == 0) funcTerminateInteraction();
+            else funcNewWord();
+            if (intGameMode == 0) funcToggleModeMenu(htmlModeMenu, htmlShader);
         }
         return;
-	} else if (intRow == 6) {
+	} else if ((intRow == 6 && intAnimations) || (intRow == 5 && !intAnimations)) {
         funcPopup(strAnswer.toUpperCase(), intPopupDuration);
         funcTerminateInteraction();
+        funcEndGame();
         return;
     }
 }
@@ -343,26 +415,145 @@ function funcCheckAnswer() {
 }
 
 function funcInitIcons() {
+    // Main Menu
     const htmlMenuIcon = document.getElementById("div-icon-menu");
     const htmlMenu = document.getElementById("div-menu");
-    const htmlShader = document.getElementById("div-shader");
+    const htmlMenuShader = document.getElementById("div-menu-shader");
 
     htmlMenuIcon.addEventListener("click", () => {
-        funcToggleMenu(htmlMenuIcon, htmlMenu, htmlShader);
+        funcToggleMenu(htmlMenu, htmlMenuShader, htmlMenuIcon);
     });
 
-    htmlShader.addEventListener("click", () => {
-        funcToggleMenu(htmlMenuIcon, htmlMenu, htmlShader);
+    htmlMenuShader.addEventListener("click", () => {
+        funcToggleMenu(htmlMenu, htmlMenuShader, htmlMenuIcon);
+    });
+
+    // Mode Menu
+
+    const htmlModeMenu = document.getElementById("div-mode-menu");
+    const htmlShader = document.getElementById("div-mode-menu-shader");
+
+    const htmlModeClassic = document.getElementById("div-mode-classic");
+    const htmlModeSprint = document.getElementById("div-mode-sprint");
+    const htmlModeBlitz = document.getElementById("div-mode-blitz");
+    const htmlModeBlast = document.getElementById("div-mode-blast");
+
+    htmlModeClassic.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 0;
+        funcResetGame();
+    });
+
+    htmlModeSprint.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 1;
+        funcResetGame();
+    });
+
+    htmlModeBlitz.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 2;
+        funcResetGame();
+    });
+
+    htmlModeBlast.addEventListener("click", () => {
+        funcToggleModeMenu(htmlModeMenu, htmlShader);
+        intGameMode = 3;
+        funcResetGame();
     });
 }
 
-function funcToggleMenu(htmlMenuIcon, htmlMenu, htmlShader) {
-    if (htmlMenuIcon.classList.contains("div-icon-active")) {
-        htmlMenuIcon.classList.remove("div-icon-active");
+function funcResetGame() {
+    funcReset();
+    funcStartInteraction();
+
+    switch (intGameMode) {
+        case 0: 
+            break;
+        case 1: 
+            intTime[0] = 0;
+            intTime[1] = 0;
+            intTime[2] = 0;
+            intervalTimer = setInterval(() => {
+                funcIncrementTime();
+            }, 100);
+            break;
+        case 2: 
+            intTime[0] = intBlitzTime;
+            intTime[1] = 0;
+            intTime[2] = 0;
+            intervalTimer = setInterval(() => {
+                funcDecrementTime();
+            }, 100);
+            break;
+        case 3: 
+            intTime[0] = intBlastTime;
+            intTime[1] = 0;
+            intTime[2] = 0;
+            intervalTimer = setInterval(() => {
+                funcDecrementTime();
+            }, 100);
+            break;
+    }
+}
+
+function funcNewWord() {
+    intAnswerID = funcRandomValueFromRange(0, intAnswersCount - 1);
+    strAnswer = strAnswers[intAnswerID];
+    document.title = strAnswer;
+    intRow = 0;
+    intTile = 0;
+    intKeyState = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+    funcInitBoard();
+    funcInitKeyboard();
+}
+
+function funcReset() {
+    funcNewWord();
+    intScore = 0;
+}
+
+function funcToggleModeMenu(htmlMenu, htmlShader) {
+    if (htmlMenu.classList.contains("div-mode-menu-active")) {
+        htmlMenu.classList.remove("div-mode-menu-active");
+        htmlShader.classList.remove("div-shader-active");
+    } else {
+        htmlMenu.classList.add("div-mode-menu-active");
+        htmlShader.classList.add("div-shader-active");
+    }
+
+    const htmlStatsMenuTime = document.getElementById("div-stats-menu-time");
+    const htmlStatsMenuScore = document.getElementById("div-stats-menu-score");
+    const htmlStatsTime = document.getElementById("p-menu-time");
+    const htmlStatsScore = document.getElementById("p-menu-score");
+
+    htmlStatsTime.innerHTML = intTime[0] + "m " + (intTime[1] + intTime[2] / 10).toFixed(1) + "s ";
+    htmlStatsScore.innerHTML = intScore;
+
+    switch (intGameMode) {
+        case 0: 
+            htmlStatsMenuTime.hidden = true;
+            htmlStatsMenuScore.hidden = true;
+            break;
+        case 1:
+            htmlStatsMenuTime.hidden = false;
+            htmlStatsMenuScore.hidden = true;
+            break;
+        case 2:
+        case 3:
+            htmlStatsMenuTime.hidden = true;
+            htmlStatsMenuScore.hidden = false;
+            break;
+    }
+}
+
+function funcToggleMenu(htmlMenu, htmlShader, htmlMenuIcon) {
+    if (htmlMenu.classList.contains("div-menu-active")) {
+        if (htmlMenuIcon != null) htmlMenuIcon.classList.remove("div-icon-active");
         htmlMenu.classList.remove("div-menu-active");
         htmlShader.classList.remove("div-shader-active");
     } else {
-        htmlMenuIcon.classList.add("div-icon-active");
+        if (htmlMenuIcon != null) htmlMenuIcon.classList.add("div-icon-active");
         htmlMenu.classList.add("div-menu-active");
         htmlShader.classList.add("div-shader-active");
     }
@@ -383,4 +574,85 @@ function funcConfig(intConfigID) {
         case 0:
             break;
     }
+}
+
+function funcUpdateStats() {
+    const htmlTime = document.getElementById("p-stats-time");
+    const htmlScore = document.getElementById("p-stats-score");
+
+    htmlScore.innerHTML = intScore;
+
+    if (intTime[0].toString().length == 2) htmlTime.innerHTML = intTime[0];
+    else htmlTime.innerHTML = "0" + intTime[0];
+    htmlTime.innerHTML += ":";
+    if (intTime[1].toString().length == 2) htmlTime.innerHTML += intTime[1];
+    else htmlTime.innerHTML += "0" + intTime[1];
+    htmlTime.innerHTML += ":";
+    htmlTime.innerHTML += intTime[2];
+}
+
+function funcDecrementTime() {
+    var intMinutes = intTime[0];
+    var intSeconds = intTime[1];
+    var intDeciseconds = intTime[2];
+
+    if (intDeciseconds - 1 < 0) {
+        if (intSeconds - 1 < 0) {
+            if (intMinutes - 1 < 0) {
+                funcEndGame();
+            } else {
+                intMinutes--;
+                intSeconds = 59;
+                intDeciseconds = 9;
+            }
+        } else {
+            intSeconds--;
+            intDeciseconds = 9;
+        }
+    } else {
+        intDeciseconds--;
+    }
+
+    intTime[0] = intMinutes;
+    intTime[1] = intSeconds;
+    intTime[2] = intDeciseconds;
+
+    funcUpdateStats();
+}
+
+function funcIncrementTime() {
+    var intMinutes = intTime[0];
+    var intSeconds = intTime[1];
+    var intDeciseconds = intTime[2];
+
+    if (intDeciseconds + 1 >= 10) {
+        if (intSeconds + 1 >= 60) {
+            if (intMinutes + 1 >= 60) {
+                funcEndGame();
+            } else {
+                intMinutes++;
+                intSeconds = 0;
+                intDeciseconds = 0;
+            }
+        } else {
+            intSeconds++;
+            intDeciseconds = 0;
+        }
+    } else {
+        intDeciseconds++;
+    }
+
+    intTime[0] = intMinutes;
+    intTime[1] = intSeconds;
+    intTime[2] = intDeciseconds;
+
+    funcUpdateStats();
+}
+
+function funcEndGame() {
+    const htmlModeMenu = document.getElementById("div-mode-menu");
+    const htmlShader = document.getElementById("div-mode-menu-shader");
+
+    clearInterval(intervalTimer);
+    funcToggleModeMenu(htmlModeMenu, htmlShader);
 }
