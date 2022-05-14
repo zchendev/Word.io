@@ -45,6 +45,6 @@ var intScore = 0;
 var intTime = [0, 0, 0];
 var intervalTimer;
 
-document.title = strAnswer;
+// document.title = strAnswer;
 
 funcInitPage();
