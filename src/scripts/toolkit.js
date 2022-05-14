@@ -500,7 +500,7 @@ function funcResetGame() {
 function funcNewWord() {
     intAnswerID = funcRandomValueFromRange(0, intAnswersCount - 1);
     strAnswer = strAnswers[intAnswerID];
-    document.title = strAnswer;
+    // document.title = strAnswer;
     intRow = 0;
     intTile = 0;
     intKeyState = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
