@@ -673,3 +673,16 @@ img.img-menu-item-icon {
 a.a-menu-item-link {
     text-decoration: none;
 }
+
+p#p-signature {
+	position: fixed;
+	bottom: 1rem;
+	left: 1rem;
+
+	color: #ffffff;
+	font-family: 'Chakra Petch', sans-serif;
+	font-size: 1.25rem;
+	font-weight: 300;
+	line-height: 1.25rem;
+	text-align: center;
+}
